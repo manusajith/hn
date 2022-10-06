@@ -16,9 +16,9 @@ defmodule HN.Data.Client do
   def fetch_top_stories() do
     top_story_ids = fetch_top_story_ids()
 
-    Enum.map(top_story_ids, fn id ->
-      id |> fetch_story
-    end)
+    stream = Task.async_stream(top_story_ids, &fetch_story/1, ordered: false, timeout: 30_000)
+
+    Stream.run(stream)
   end
 
   defp fetch_top_story_ids() do
