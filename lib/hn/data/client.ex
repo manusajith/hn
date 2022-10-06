@@ -6,6 +6,7 @@ defmodule HN.Data.Client do
   @base_url "https://hacker-news.firebaseio.com/v0/"
 
   alias HN.Data.HttpClient
+  alias HN.Storage.Story
 
   require Logger
 
@@ -29,6 +30,7 @@ defmodule HN.Data.Client do
   defp fetch_story(id) do
     url = @base_url <> "/item/#{id}.json"
     story = HttpClient.get(url)
+    story = struct(%Story{}, story)
     Logger.debug(story)
   end
 end
