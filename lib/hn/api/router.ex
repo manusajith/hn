@@ -55,7 +55,9 @@ defmodule HN.API.Router do
   end
 
   defp fetch_stories(page, cont) when page > 0 do
-    {_stories, cont} = Repo.list(cont)
-    fetch_stories(page - 1, cont)
+    case Repo.list(cont) do
+      :"$end_of_table" -> {[], nil}
+      {_stories, cont} -> fetch_stories(page - 1, cont)
+    end
   end
 end

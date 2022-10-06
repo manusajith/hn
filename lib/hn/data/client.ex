@@ -12,12 +12,12 @@ defmodule HN.Data.Client do
   Fetch top stories from HN API and save it to ETS Table.
   """
   @spec fetch_top_stories() :: :ok
-  def fetch_top_stories() do
-    top_story_ids = fetch_top_story_ids()
+  def fetch_top_stories(limit \\ 50) do
+    top_story_ids = fetch_top_story_ids(limit)
 
     stream =
       Task.async_stream(
-        top_story_ids,
+        Map.values(top_story_ids),
         fn id ->
           id |> fetch_story |> save_story
         end,
@@ -29,8 +29,8 @@ defmodule HN.Data.Client do
     Stream.run(stream)
   end
 
-  defp fetch_top_story_ids() do
-    url = @base_url <> "/topstories.json"
+  defp fetch_top_story_ids(limit) do
+    url = @base_url <> "/topstories.json?limitToLast=#{limit}&orderBy=%22%24key%22"
     HttpClient.get(url)
   end
 
