@@ -17,4 +17,9 @@ defmodule HN.API.Router do
       story -> send_resp(conn, 200, Jason.encode!(story))
     end
   end
+
+  get "/stories" do
+    {stories, _cont} = Repo.list(:stories, 10)
+    send_resp(conn, 200, Jason.encode!(stories))
+  end
 end
