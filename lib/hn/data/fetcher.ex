@@ -4,7 +4,9 @@ defmodule HN.Data.Fetcher do
   """
   use GenServer
 
+  alias HN.Api.Websocket
   alias HN.Data.Client
+  alias HN.Storage.Repo
 
   @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
   def start_link(_opts) do
@@ -39,9 +41,15 @@ defmodule HN.Data.Fetcher do
 
   defp refresh(_state) do
     Client.fetch_top_stories()
+    notify()
   end
 
   defp refresh_interval do
     String.to_integer(System.get_env("REFRESH_INTERVAL", "300000"))
+  end
+
+  defp notify do
+    {stories, _continuation} = Repo.list(:stories, 50)
+    Websocket.send_broadcast(stories)
   end
 end

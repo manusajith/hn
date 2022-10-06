@@ -24,4 +24,15 @@ defmodule HN.Api.Websocket do
   def websocket_handle({:text, _message}, state) do
     {:reply, {:text, "Pong!"}, state}
   end
+
+  @spec send_broadcast(any()) :: any()
+  def send_broadcast(stories) do
+    stories = Jason.encode!(%{stories: Jason.encode!(stories)})
+
+    Registry.dispatch(Registry.HN, "/websocket", fn entries ->
+      Enum.each(entries, fn {pid, _} ->
+        Process.send(pid, stories, [])
+      end)
+    end)
+  end
 end
