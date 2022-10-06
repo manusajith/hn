@@ -15,7 +15,8 @@ defmodule HN.Application do
         options: [dispatch: dispatch(), port: port()]
       ),
       {Finch, name: HN.Finch},
-      HN.Data.Fetcher
+      HN.Data.Fetcher,
+      Registry.child_spec(keys: :duplicate, name: Registry.HN)
     ]
 
     opts = [strategy: :one_for_one, name: HN.Supervisor]
@@ -36,6 +37,7 @@ defmodule HN.Application do
     [
       {:_,
        [
+         {"/websocket", HN.Api.Websocket, []},
          {:_, Plug.Cowboy.Handler, {HN.API.Router, []}}
        ]}
     ]
