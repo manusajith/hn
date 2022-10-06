@@ -14,7 +14,8 @@ defmodule HN.Application do
         plug: HN.API.Router,
         options: [dispatch: dispatch(), port: port()]
       ),
-      {Finch, name: HN.Finch}
+      {Finch, name: HN.Finch},
+      HN.Data.Fetcher
     ]
 
     opts = [strategy: :one_for_one, name: HN.Supervisor]
