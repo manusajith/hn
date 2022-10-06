@@ -9,7 +9,7 @@ defmodule HN.Application do
     initialise_storage()
 
     children = [
-       Plug.Cowboy.child_spec(
+      Plug.Cowboy.child_spec(
         scheme: :http,
         plug: HN.API.Router,
         options: [dispatch: dispatch(), port: port()]
