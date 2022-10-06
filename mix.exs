@@ -21,7 +21,10 @@ defmodule HN.MixProject do
   defp deps do
     [
       {:finch, "~> 0.13.0"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:plug, "~> 1.6"},
+      {:cowboy, "~> 2.4"},
+      {:plug_cowboy, "~> 2.0"}
     ]
   end
 end

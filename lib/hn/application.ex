@@ -9,6 +9,11 @@ defmodule HN.Application do
     initialise_storage()
 
     children = [
+       Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: HN.API.Router,
+        options: [dispatch: dispatch(), port: port()]
+      ),
       {Finch, name: HN.Finch}
     ]
 
@@ -18,5 +23,18 @@ defmodule HN.Application do
 
   defp initialise_storage do
     :ets.new(:stories, [:named_table, :public])
+  end
+
+  defp dispatch do
+    [
+      {:_,
+       [
+         {:_, Plug.Cowboy.Handler, {HN.API.Router, []}}
+       ]}
+    ]
+  end
+
+  defp port do
+    String.to_integer(System.get_env("PORT") || "4000")
   end
 end
