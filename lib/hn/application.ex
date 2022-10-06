@@ -22,7 +22,13 @@ defmodule HN.Application do
   end
 
   defp initialise_storage do
-    :ets.new(:stories, [:named_table, :public])
+    :ets.new(:stories, [
+      :ordered_set,
+      :named_table,
+      :public,
+      {:write_concurrency, true},
+      {:read_concurrency, true}
+    ])
   end
 
   defp dispatch do
